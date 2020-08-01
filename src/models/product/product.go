@@ -15,11 +15,12 @@ type Product struct {
 	ID    string `json:"id"`
 	Name  string `json:"name"`
 	Price int    `json:"price"`
-	Date  int
+	// Date  int
 }
 
 // Repo for Product Type
 type Repo struct {
+	Date     int `json:"date"`
 	Products []Product
 }
 
