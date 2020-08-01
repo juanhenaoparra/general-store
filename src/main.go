@@ -3,14 +3,10 @@ package main
 import (
 	// Core imports
 
-	"encoding/csv"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
-	"os"
 	"strconv"
-	"strings"
 
 	// Chi router import
 	"github.com/go-chi/chi"
@@ -18,70 +14,30 @@ import (
 
 	// Local imports
 	"./models/buyer"
-	"./models/product"
+	"./utils"
 )
-
-// Datasource Type
-type Datasource struct {
-	Buyers       string
-	Products     string
-	Transactions string
-}
-
-func getDataPaths() Datasource {
-	path := "repo.json"
-	jsonFile, err := os.Open(path)
-
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	defer jsonFile.Close()
-
-	byteValue, _ := ioutil.ReadAll(jsonFile)
-
-	var urls Datasource
-
-	err = json.Unmarshal(byteValue, &urls)
-
-	if err != nil {
-		fmt.Println("Error", err)
-	}
-
-	return urls
-}
 
 // Get all buyers from endpoint
 func syncBuyers(w http.ResponseWriter, r *http.Request) {
-	// Search in repo.json the urls
-	urls := getDataPaths()
-
-	date, dateErr := strconv.Atoi(r.URL.Query().Get("date"))
-
-	if dateErr != nil {
-		fmt.Println(dateErr)
-	}
-
-	response, err := http.Get(urls.Buyers + "?date=" + strconv.Itoa(date))
-
-	// Managing errors
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	// Close Body on finish scoped function
-	defer response.Body.Close()
+	// Get date string from query params
+	date := r.URL.Query().Get("date")
 
 	// Read the body and manage errors
-	body, err := ioutil.ReadAll(response.Body)
-
+	body, err := utils.ExtractDataFrom("buyers", date)
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	// Create a var buyers of type Repo
+	// Create a var buyers of type Repo and conversionError
 	var buyers buyer.Repo
-	buyers.Date = date
+	var conversionError error
+
+	buyers.Date, conversionError = strconv.Atoi(date)
+
+	if conversionError != nil {
+		fmt.Println(conversionError)
+	}
+
 	json.Unmarshal(body, &buyers.Buyers) // Parse the bytes readed from the body in a Repo Property
 
 	// This makes a for loop for every buyer and set the date
@@ -93,55 +49,25 @@ func syncBuyers(w http.ResponseWriter, r *http.Request) {
 }
 
 func syncProducts(w http.ResponseWriter, r *http.Request) {
-	// Search in repo.json the urls
-	urls := getDataPaths()
-
-	date, dateErr := strconv.Atoi(r.URL.Query().Get("date"))
-
-	if dateErr != nil {
-		fmt.Println(dateErr)
-	}
-
-	response, err := http.Get(urls.Products + "?date=" + strconv.Itoa(date))
-
-	// Managing errors
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	// Close Body on finish scoped function
-	defer response.Body.Close()
+	// Get date string from query params
+	date := r.URL.Query().Get("date")
 
 	// Read the body and manage errors
-	body, err := ioutil.ReadAll(response.Body)
-
+	body, err := utils.ExtractDataFrom("products", date)
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	// Replace ' char with ,
-	replaced := strings.ReplaceAll(string(body), "'", ",")
+	normalizedCsv := utils.GetNormalizeCsv(string(body), "'", ",")
 
-	// Create a csv reader for the replaced string
-	reader := csv.NewReader(strings.NewReader(replaced))
-	results, _ := reader.ReadAll()
+	products := utils.GiveMeProductsStructure(normalizedCsv)
 
-	// Create a var products of type Repo
-	var products product.Repo
-	products.Date = date
+	// Add date to products repo
+	var conversionError error
+	products.Date, conversionError = strconv.Atoi(date)
 
-	for _, p := range results {
-		conversionPrice, err := strconv.Atoi(p[2])
-
-		if err != nil {
-			fmt.Println(err)
-		}
-
-		products.Add(product.Product{
-			ID:    p[0],
-			Name:  p[1],
-			Price: conversionPrice,
-		})
+	if conversionError != nil {
+		fmt.Println(conversionError)
 	}
 
 	// // Set headers and return encoded
