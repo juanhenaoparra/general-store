@@ -1,9 +1,5 @@
 package transaction
 
-import (
-	"../product"
-)
-
 // Getter interface
 type Getter interface {
 	GetAll() []Transaction
@@ -16,17 +12,18 @@ type Adder interface {
 
 // Transaction Type
 type Transaction struct {
-	ID       string `json:"id"`
-	BuyerID  string `json:"buyer_id"`
-	IP       int    `json:"ip"`
-	Device   string `json:"device"`
-	Date     int
-	Products []product.Product `json:"product_ids"`
+	ID      string `json:"id"`
+	BuyerID string `json:"buyer_id"`
+	IP      string `json:"ip"`
+	Device  string `json:"device"`
+	// Date     int
+	Products []string `json:"product_ids"`
 }
 
 // Repo for Transaction Type
 type Repo struct {
-	Transactions []Transaction
+	Date         int           `json:"date"`
+	Transactions []Transaction `json:"all"`
 }
 
 // New Transaction Struct

@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 
 	// Chi router import
 	"github.com/go-chi/chi"
@@ -14,6 +15,7 @@ import (
 
 	// Local imports
 	"./models/buyer"
+	"./models/transaction"
 	"./utils"
 )
 
@@ -60,7 +62,7 @@ func syncProducts(w http.ResponseWriter, r *http.Request) {
 
 	normalizedCsv := utils.GetNormalizeCsv(string(body), "'", ",")
 
-	products := utils.GiveMeProductsStructure(normalizedCsv)
+	products := utils.GiveMeRepoProductStructure(normalizedCsv)
 
 	// Add date to products repo
 	var conversionError error
@@ -76,6 +78,32 @@ func syncProducts(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func syncTransactions(w http.ResponseWriter, r *http.Request) {
+	// Get date string from query params
+	date := r.URL.Query().Get("date")
+
+	// Read the body and manage errors
+	body, err := utils.ExtractDataFrom("transactions", date)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	replacedRare := strings.ReplaceAll(string(body), "\u0000", "!")
+	separeTransactions := strings.Split(replacedRare, "!!")
+
+	var transactions transaction.Repo = utils.GiveMeRepoTransactionStructure(separeTransactions)
+
+	// Add date to products repo
+	var conversionError error
+	transactions.Date, conversionError = strconv.Atoi(date)
+
+	if conversionError != nil {
+		fmt.Println(conversionError)
+	}
+
+	json.NewEncoder(w).Encode(transactions)
+}
+
 func main() {
 
 	// Start chi router in port:3333
@@ -87,6 +115,7 @@ func main() {
 	// Route to get buyers
 	r.Get("/sync/buyers", syncBuyers)
 	r.Get("/sync/products", syncProducts)
+	r.Get("/sync/transactions", syncTransactions)
 
 	// Start the server
 	http.ListenAndServe(":"+string(port), r)
