@@ -2,14 +2,13 @@ package main
 
 import (
 	// Core imports
-
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
 
-	// Chi router import
+	// Import Chi Router
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 
