@@ -31,11 +31,11 @@ func GiveMeRepoProductStructure(textArray [][]string) product.Repo {
 }
 
 // GiveMeRepoTransactionStructure given an string matrix iterate over them and returns Repo Product Type
-func GiveMeRepoTransactionStructure(textArray []string) transaction.Repo {
+func GiveMeRepoTransactionStructure(textArray []string, separator string) transaction.Repo {
 	var transactions transaction.Repo
 
 	for _, t := range textArray[:len(textArray)-2] {
-		transactionListed := strings.Split(t, "!")
+		transactionListed := strings.Split(t, separator)
 		productIDList := GetListOfProducts(transactionListed[4])
 
 		transactions.Add(transaction.Transaction{

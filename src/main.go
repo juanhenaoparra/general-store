@@ -88,10 +88,13 @@ func syncTransactions(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 	}
 
-	replacedRare := strings.ReplaceAll(string(body), "\u0000", "!")
-	separeTransactions := strings.Split(replacedRare, "!!")
+	separator := "!"
+	// Replace the rare chracter by 'separator', because performance
+	replacedRare := strings.ReplaceAll(string(body), "\u0000", separator)
+	// Split transactions by our 'separator' identifier
+	separeTransactions := strings.Split(replacedRare, separator+separator)
 
-	var transactions transaction.Repo = utils.GiveMeRepoTransactionStructure(separeTransactions)
+	var transactions transaction.Repo = utils.GiveMeRepoTransactionStructure(separeTransactions, separator)
 
 	// Add date to products repo
 	var conversionError error
