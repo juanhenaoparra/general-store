@@ -12,6 +12,7 @@ import (
 // GiveMeRepoProductStructure given an string matrix iterate over them and returns Repo Product Type
 func GiveMeRepoProductStructure(textArray [][]string) product.Repo {
 	var products product.Repo
+	myDtype := []string{"Product"}
 
 	for _, p := range textArray {
 		conversionPrice, err := strconv.Atoi(p[2])
@@ -24,6 +25,7 @@ func GiveMeRepoProductStructure(textArray [][]string) product.Repo {
 			ID:    p[0],
 			Name:  p[1],
 			Price: conversionPrice,
+			DType: myDtype,
 		})
 	}
 
@@ -31,8 +33,9 @@ func GiveMeRepoProductStructure(textArray [][]string) product.Repo {
 }
 
 // GiveMeRepoTransactionStructure given an string matrix iterate over them and returns Repo Product Type
-func GiveMeRepoTransactionStructure(textArray []string, separator string) transaction.Repo {
+func GiveMeRepoTransactionStructure(textArray []string, separator string, date *int) transaction.Repo {
 	var transactions transaction.Repo
+	myDtype := []string{"Transaction"}
 
 	for _, t := range textArray[:len(textArray)-2] {
 		transactionListed := strings.Split(t, separator)
@@ -44,6 +47,8 @@ func GiveMeRepoTransactionStructure(textArray []string, separator string) transa
 			IP:       transactionListed[2],
 			Device:   transactionListed[3],
 			Products: productIDList,
+			Date:     date,
+			DType:    myDtype,
 		})
 	}
 
