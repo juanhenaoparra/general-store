@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"strconv"
 )
 
 // Datasource Type
@@ -39,9 +40,10 @@ func GetDataPaths() Datasource {
 }
 
 // ExtractDataFrom receives a url to fetch
-func ExtractDataFrom(url string, date string) ([]byte, error) {
+func ExtractDataFrom(url string, date int) ([]byte, error) {
 	// Search in repo.json the urls
 	urls := GetDataPaths()
+	sDate := strconv.Itoa(date)
 
 	var (
 		response *http.Response
@@ -49,11 +51,11 @@ func ExtractDataFrom(url string, date string) ([]byte, error) {
 	)
 
 	if url == "buyers" {
-		response, err = http.Get(urls.Buyers + "?date=" + date)
+		response, err = http.Get(urls.Buyers + "?date=" + sDate)
 	} else if url == "products" {
-		response, err = http.Get(urls.Products + "?date=" + date)
+		response, err = http.Get(urls.Products + "?date=" + sDate)
 	} else {
-		response, err = http.Get(urls.Transactions + "?date=" + date)
+		response, err = http.Get(urls.Transactions + "?date=" + sDate)
 	}
 
 	// Managing errors
