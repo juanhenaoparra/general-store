@@ -21,7 +21,6 @@ type Buyer struct {
 
 // Repo for Buyer Type
 type Repo struct {
-	Date   int     `json:"date"`
 	Buyers []Buyer `json:"all"`
 }
 
@@ -41,10 +40,3 @@ func (r *Repo) Add(buyer Buyer) {
 func (r *Repo) GetAll() []Buyer {
 	return r.Buyers
 }
-
-//SetDateAll for every buyer
-// func (r *Repo) SetDateAll() {
-// 	for i := range r.Buyers {
-// 		r.Buyers[i].Date = r.Date
-// 	}
-// }

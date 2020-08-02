@@ -21,7 +21,6 @@ type Product struct {
 
 // Repo for Product Type
 type Repo struct {
-	Date     int `json:"date"`
 	Products []Product
 }
 
