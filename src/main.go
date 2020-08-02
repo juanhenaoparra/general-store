@@ -26,6 +26,5 @@ func main() {
 
 	// Start the server
 	fmt.Printf("Server Listening at %v port\n", port)
-	http.ListenAndServe(":"+string(port), r)
-
+	http.ListenAndServe(":"+port, r)
 }
