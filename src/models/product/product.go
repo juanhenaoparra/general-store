@@ -12,10 +12,11 @@ type Adder interface {
 
 // Product Type
 type Product struct {
-	ID    string `json:"id"`
-	Name  string `json:"name"`
-	Price int    `json:"price"`
-	// Date  int
+	UID   string   `json:"uid,omitempty"`
+	ID    string   `json:"id,omitempty"`
+	Name  string   `json:"name,omitempty"`
+	Price int      `json:"price,omitempty"`
+	DType []string `json:"dgraph.type,omitempty"`
 }
 
 // Repo for Product Type

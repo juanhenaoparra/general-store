@@ -12,10 +12,11 @@ type Adder interface {
 
 // Buyer Type
 type Buyer struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
-	Age  int    `json:"age"`
-	// Date int    `json:"date"`
+	UID   string   `json:"uid,omitempty"`
+	ID    string   `json:"id,omitempty"`
+	Name  string   `json:"name,omitempty"`
+	Age   int      `json:"age,omitempty"`
+	DType []string `json:"dgraph.type,omitempty"`
 }
 
 // Repo for Buyer Type
