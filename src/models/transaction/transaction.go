@@ -18,13 +18,12 @@ type Transaction struct {
 	IP       string   `json:"ip,omitempty"`
 	Device   string   `json:"device,omitempty"`
 	Products []string `json:"product_ids"`
-	Date     int      `json:"int,omitempty"`
+	Date     *int     `json:"date,omitempty"`
 	DType    []string `json:"dgraph.type,omitempty"`
 }
 
 // Repo for Transaction Type
 type Repo struct {
-	Date         int           `json:"date"`
 	Transactions []Transaction `json:"all"`
 }
 
