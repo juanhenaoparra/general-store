@@ -1,7 +1,13 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div class="container my-4">
+    <div class="row">
+      <div class="col-md-5">
+        <img class="logo" alt="Front Store Logo" src="../assets/market_research.svg">
+      </div>
+      <div class="col-md-7 text-center">
+        <HelloWorld msg="Welcome to Your Store Administration"/>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -16,3 +22,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+  .logo{
+    width: 500px;
+  }
+</style>
