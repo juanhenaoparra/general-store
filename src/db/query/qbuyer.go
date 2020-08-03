@@ -42,3 +42,59 @@ func SearchBuyerByID(ctx context.Context, id string) string {
 
 	return ""
 }
+
+// GetBuyersPaginated retrieve users paginated
+func GetBuyersPaginated(ctx *context.Context, first string, offset string) buyer.Repo {
+	dg := db.NewClient()
+
+	variables := map[string]string{"$first": first, "$offset": offset}
+	q := `query Buyers($first: int, $offset: int) {
+					buyers (func: type("Buyer"), first: $first, offset: $offset) 	{
+						id,
+						name,
+						age,
+					}
+				}`
+
+	resp, err := dg.NewTxn().QueryWithVars(*ctx, q, variables)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var buyersRepo buyer.Repo
+
+	err = json.Unmarshal(resp.Json, &buyersRepo)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return buyersRepo
+}
+
+// GetBuyerProfile retrieve user profile by id param
+func GetBuyerProfile(ctx *context.Context, id string, first string, offset string) string {
+	dg := db.NewClient()
+
+	variables := map[string]string{"$id": id, "$first": first, "$offset": offset}
+	q := `query Buyers($id: string, $first: int, $offset: int) {
+					buyers (func: eq(id, $id), first: 1) 	{
+						id,
+						name,
+						age,
+						~by_buyer (first: $first, offset: $offset) {
+							id,
+							price,
+							time {
+								timestamp
+							}
+						}
+					}
+				}`
+
+	resp, err := dg.NewTxn().QueryWithVars(*ctx, q, variables)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return string(resp.Json)
+}

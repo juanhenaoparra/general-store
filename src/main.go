@@ -29,8 +29,14 @@ func main() {
 	db.Setup(dg)
 	// ---------- UNCOMMENT AND RUN THIS TO SETUP THE TYPES AND FIELDS ----------
 
-	// Route to get all repos
-	r.Get("/sync", handler.SyncAll)
+	// Routes
+	r.Get("/sync", handler.SyncAll) // Route to get all repos
+
+	// r.Route("/buyer", func(r chi.Router) {
+	// 	r.Use(handler.BuyerCtx)
+	// })
+	r.Get("/buyer", handler.GetBuyersByPage)           // Receive params first & offset
+	r.Get("/buyer/{buyerId}", handler.GetBuyerProfile) // Receive id and params first & offset
 
 	// Start the server
 	fmt.Printf("Server Listening at %v port\n", port)

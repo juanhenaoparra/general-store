@@ -21,7 +21,7 @@ type Buyer struct {
 
 // Repo for Buyer Type
 type Repo struct {
-	Buyers []Buyer `json:"all"`
+	Buyers []Buyer `json:"buyers"`
 }
 
 // New Buyer Struct
