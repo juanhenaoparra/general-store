@@ -9,6 +9,7 @@ import (
 	// Import Chi Router
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
+	"github.com/rs/cors"
 
 	// Local imports
 	"./db"
@@ -38,7 +39,8 @@ func main() {
 	r.Get("/buyer", handler.GetBuyersByPage)           // Receive params first & offset
 	r.Get("/buyer/{buyerId}", handler.GetBuyerProfile) // Receive id and params first & offset
 
+	corsHandler := cors.Default().Handler(r)
 	// Start the server
 	fmt.Printf("Server Listening at %v port\n", port)
-	http.ListenAndServe(":"+port, r)
+	http.ListenAndServe(":"+port, corsHandler)
 }
