@@ -14,7 +14,6 @@ import (
 
 //SyncDevices return a list of handled ips
 func SyncDevices(listDevices []string, devices *device.Repo, dg *dgo.Dgraph) map[string]string {
-	fmt.Printf("Devices: Len>: %v\n", len(listDevices))
 
 	for _, v := range listDevices {
 		devices.Add(device.Device{

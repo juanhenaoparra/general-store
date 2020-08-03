@@ -13,7 +13,6 @@ import (
 
 //SyncIPS return a list of handled ips
 func SyncIPS(listIPS []string, ips *ip.Repo, dg *dgo.Dgraph) map[string]string {
-	fmt.Printf("IPS: Len>: %v\n", len(listIPS))
 
 	for _, v := range listIPS {
 		ips.Add(ip.IP{

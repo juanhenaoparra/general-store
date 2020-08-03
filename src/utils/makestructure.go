@@ -44,14 +44,15 @@ func GiveMeRepoTransactionStructure(rawTransactions [][]string, date *int, trans
 		productUIDList := getListOfProducts(assignments, t[4])
 		newTransaction := transaction.Transaction{
 			ID:    t[0],
-			Date:  date,
 			DType: myDtype,
 		}
 
+		newTransaction.Date = make(map[string]string)
 		newTransaction.BuyerID = make(map[string]string)
 		newTransaction.IP = make(map[string]string)
 		newTransaction.Device = make(map[string]string)
 
+		newTransaction.Date = assignments.Date
 		newTransaction.BuyerID["uid"] = assignments.Buyers[t[1]]
 		newTransaction.IP["uid"] = assignments.Ips[t[2]]
 		newTransaction.Device["uid"] = assignments.Devices[t[3]]

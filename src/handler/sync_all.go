@@ -9,6 +9,7 @@ import (
 
 	"../db"
 	"../models/assignment"
+	"../models/datemodel"
 	"../models/device"
 	"../models/ip"
 	"../models/transaction"
@@ -24,6 +25,7 @@ func SyncAll(w http.ResponseWriter, r *http.Request) {
 	var transactions transaction.Repo
 	var ips ip.Repo
 	var devices device.Repo
+	var dateModel datemodel.Date
 
 	// Get date param
 	date := r.URL.Query().Get("date")
@@ -38,24 +40,31 @@ func SyncAll(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	fmt.Printf("Fecha a sincronizar: %v\n", nDate)
-
 	// Create connection with Dgraph
 	dg := db.NewClient()
 
-	_, buyersAssignments := syncBuyers(nDate, dg)
-	_, productsAssignments := syncProducts(nDate, dg)
+	dateModel.UID = "_:" + strconv.Itoa(nDate)
+	dateModel.Date = &nDate
+	dateModel.DType = []string{"Date"}
 
-	assignments.Buyers = buyersAssignments
-	assignments.Products = productsAssignments
+	dateAssignments := SyncDate(&nDate, &dateModel, dg)
 
-	// Once everything are saved pass params and save in transactions
-	assignments.Transactions = syncTransactions(&nDate, &transactions, &ips, &devices, &assignments, dg)
+	if len(dateAssignments["uid"]) <= 0 {
+		json.NewEncoder(w).Encode("Error: La fecha ya ha sido sincronizada")
+	} else {
+		fmt.Printf("Fecha a sincronizar: %v\n", nDate)
 
-	w.Header().Set("Content-Type", "application/json")
-	// json.NewEncoder(w).Encode(buyers.Buyers[:10])
-	// json.NewEncoder(w).Encode(products.Products[:10])
-	// fmt.Printf("Transactions: %v, IPS: %v\n", len(transactions.GetAll()), len(ips.GetAll()))
-	json.NewEncoder(w).Encode(transactions.Transactions[:100])
-	// json.NewEncoder(w).Encode(ips.IPS[:10])
+		_, buyersAssignments := syncBuyers(nDate, dg)
+		_, productsAssignments := syncProducts(nDate, dg)
+
+		assignments.Date = dateAssignments
+		assignments.Buyers = buyersAssignments
+		assignments.Products = productsAssignments
+
+		// Once everything are saved pass params and save in transactions
+		assignments.Transactions = syncTransactions(&nDate, &transactions, &ips, &devices, &assignments, dg)
+
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(transactions.Transactions[:100])
+	}
 }

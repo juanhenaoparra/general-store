@@ -17,8 +17,6 @@ import (
 )
 
 func syncTransactions(date *int, transactions *transaction.Repo, ips *ip.Repo, devices *device.Repo, assignments *assignment.AssignmentsRepo, dg *dgo.Dgraph) map[string]string {
-	//buyersAssignments map[string]string
-
 	// Read the body and manage errors
 	body, err := utils.ExtractDataFrom("transactions", *date)
 	if err != nil {

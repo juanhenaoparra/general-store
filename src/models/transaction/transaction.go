@@ -14,7 +14,7 @@ type Adder interface {
 type Transaction struct {
 	UID      string              `json:"uid,omitempty"`
 	ID       string              `json:"id,omitempty"`
-	Date     *int                `json:"date,omitempty"`
+	Date     map[string]string   `json:"time,omitempty"`
 	BuyerID  map[string]string   `json:"by_buyer,omitempty"`
 	IP       map[string]string   `json:"since_ip,omitempty"`
 	Device   map[string]string   `json:"since_device,omitempty"`

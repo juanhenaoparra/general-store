@@ -29,16 +29,22 @@ func Setup(c *dgo.Dgraph) {
 	// Install a schema into dgraph.
 	err := c.Alter(context.Background(), &api.Operation{
 		Schema: `
-			id: string @index(exact) .
+			id: string @index(exact) @upsert .
 			name: string @index(exact) .
+			device_type: string @index(exact) @upsert .
 			age: int @index(int) .
-			address: string @index(exact) .
+			address: string @index(exact) @upsert .
 			price: int @index(int) .
-			date: int @index(int) .
+			timestamp: int @index(int) @upsert .
+			time: uid @reverse .
 			by_buyer: uid @reverse .
 			since_ip: uid @reverse .
 			since_device: uid @reverse .
-			have_products: [uid] .
+			have_products: [uid] @count @reverse .
+
+			type Date {
+				timestamp
+			}
 
 			type Buyer {
 				id
@@ -57,12 +63,12 @@ func Setup(c *dgo.Dgraph) {
 			}
 
 			type Device {
-				name
+				device_type
 			}
 
 			type Transaction {
 				id
-				date
+				time
 				by_buyer
 				since_ip
 				since_device

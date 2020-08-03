@@ -13,7 +13,7 @@ type Adder interface {
 // Device Type
 type Device struct {
 	UID   string   `json:"uid,omitempty"`
-	Name  string   `json:"name,omitempty"`
+	Name  string   `json:"device_type,omitempty"`
 	DType []string `json:"dgraph.type,omitempty"`
 }
 
