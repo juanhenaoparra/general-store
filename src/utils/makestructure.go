@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"strings"
 
+	"../models/assignment"
 	"../models/product"
 	"../models/transaction"
 )
@@ -22,6 +23,7 @@ func GiveMeRepoProductStructure(textArray [][]string) product.Repo {
 		}
 
 		products.Add(product.Product{
+			UID:   "_:" + p[0],
 			ID:    p[0],
 			Name:  p[1],
 			Price: conversionPrice,
@@ -33,30 +35,34 @@ func GiveMeRepoProductStructure(textArray [][]string) product.Repo {
 }
 
 // GiveMeRepoTransactionStructure given an string matrix iterate over them and returns Repo Product Type
-func GiveMeRepoTransactionStructure(textArray []string, separator string, date *int) transaction.Repo {
-	var transactions transaction.Repo
+func GiveMeRepoTransactionStructure(rawTransactions [][]string, date *int, transactions *transaction.Repo, assignments *assignment.AssignmentsRepo) {
+
 	myDtype := []string{"Transaction"}
 
-	for _, t := range textArray[:len(textArray)-2] {
-		transactionListed := strings.Split(t, separator)
-		productIDList := GetListOfProducts(transactionListed[4])
+	// Iterate textArray until before throws error (Because the splittler leaves a blank position at final)
+	for _, t := range rawTransactions {
+		productUIDList := getListOfProducts(assignments, t[4])
 
 		transactions.Add(transaction.Transaction{
-			ID:       transactionListed[0],
-			BuyerID:  transactionListed[1],
-			IP:       transactionListed[2],
-			Device:   transactionListed[3],
-			Products: productIDList,
+			ID:       t[0],
+			BuyerID:  assignments.Buyers[t[1]],
+			IP:       assignments.Ips[t[2]],
+			Device:   assignments.Devices[t[3]],
+			Products: productUIDList,
 			Date:     date,
 			DType:    myDtype,
 		})
 	}
 
-	return transactions
 }
 
-func GetListOfProducts(text string) []string {
+func getListOfProducts(assignments *assignment.AssignmentsRepo, text string) []string {
+	var productsFinded []string
 	text = text[1 : len(text)-1]
 
-	return strings.Split(text, ",")
+	for _, v := range strings.Split(text, ",") {
+		productsFinded = append(productsFinded, assignments.Products[v])
+	}
+
+	return productsFinded
 }
