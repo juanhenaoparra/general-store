@@ -12,14 +12,14 @@ type Adder interface {
 
 // Transaction Type
 type Transaction struct {
-	UID      string   `json:"uid,omitempty"`
-	ID       string   `json:"id,omitempty"`
-	Date     *int     `json:"date,omitempty"`
-	BuyerID  string   `json:"by_buyer,omitempty"`
-	IP       string   `json:"since_ip,omitempty"`
-	Device   string   `json:"since_device,omitempty"`
-	Products []string `json:"have_products"`
-	DType    []string `json:"dgraph.type,omitempty"`
+	UID      string              `json:"uid,omitempty"`
+	ID       string              `json:"id,omitempty"`
+	Date     *int                `json:"date,omitempty"`
+	BuyerID  map[string]string   `json:"by_buyer,omitempty"`
+	IP       map[string]string   `json:"since_ip,omitempty"`
+	Device   map[string]string   `json:"since_device,omitempty"`
+	Products []map[string]string `json:"have_products"`
+	DType    []string            `json:"dgraph.type,omitempty"`
 }
 
 // Repo for Transaction Type

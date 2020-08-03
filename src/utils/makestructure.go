@@ -42,26 +42,35 @@ func GiveMeRepoTransactionStructure(rawTransactions [][]string, date *int, trans
 	// Iterate textArray until before throws error (Because the splittler leaves a blank position at final)
 	for _, t := range rawTransactions {
 		productUIDList := getListOfProducts(assignments, t[4])
+		newTransaction := transaction.Transaction{
+			ID:    t[0],
+			Date:  date,
+			DType: myDtype,
+		}
 
-		transactions.Add(transaction.Transaction{
-			ID:       t[0],
-			BuyerID:  assignments.Buyers[t[1]],
-			IP:       assignments.Ips[t[2]],
-			Device:   assignments.Devices[t[3]],
-			Products: productUIDList,
-			Date:     date,
-			DType:    myDtype,
-		})
+		newTransaction.BuyerID = make(map[string]string)
+		newTransaction.IP = make(map[string]string)
+		newTransaction.Device = make(map[string]string)
+
+		newTransaction.BuyerID["uid"] = assignments.Buyers[t[1]]
+		newTransaction.IP["uid"] = assignments.Ips[t[2]]
+		newTransaction.Device["uid"] = assignments.Devices[t[3]]
+		newTransaction.Products = productUIDList
+
+		transactions.Add(newTransaction)
+
 	}
 
 }
 
-func getListOfProducts(assignments *assignment.AssignmentsRepo, text string) []string {
-	var productsFinded []string
+func getListOfProducts(assignments *assignment.AssignmentsRepo, text string) []map[string]string {
+	var productsFinded []map[string]string
 	text = text[1 : len(text)-1]
 
 	for _, v := range strings.Split(text, ",") {
-		productsFinded = append(productsFinded, assignments.Products[v])
+		tempProduct := make(map[string]string)
+		tempProduct["uid"] = assignments.Products[v]
+		productsFinded = append(productsFinded, tempProduct)
 	}
 
 	return productsFinded
