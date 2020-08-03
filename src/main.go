@@ -2,6 +2,7 @@ package main
 
 import (
 	// Core imports
+
 	"fmt"
 	"net/http"
 
@@ -10,16 +11,23 @@ import (
 	"github.com/go-chi/chi/middleware"
 
 	// Local imports
+	"./db"
 	"./handler"
 )
 
 func main() {
-
-	// Start chi router in port:3333
+	// Create main ports
 	port := "3333"
+
+	// Create Chi Router
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
+
+	// ---------- UNCOMMENT AND RUN THIS TO SETUP THE TYPES AND FIELDS ----------
+	dg := db.NewClient()
+	db.Setup(dg)
+	// ---------- UNCOMMENT AND RUN THIS TO SETUP THE TYPES AND FIELDS ----------
 
 	// Route to get all repos
 	r.Get("/sync", handler.SyncAll)
