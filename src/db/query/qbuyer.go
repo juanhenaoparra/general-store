@@ -90,6 +90,18 @@ func GetBuyerProfile(ctx *context.Context, id string, first string, offset strin
 								name
 								price
 							},
+							since_ip {
+								address,
+								uid,
+								~since_ip{
+									uid,
+									dgraph.type,
+									by_buyer {
+										name,
+										id
+									}
+								}
+							}
 						}
 					}
 				}`
