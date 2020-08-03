@@ -83,10 +83,13 @@ func GetBuyerProfile(ctx *context.Context, id string, first string, offset strin
 						age,
 						~by_buyer (first: $first, offset: $offset) {
 							id,
-							price,
 							time {
 								timestamp
-							}
+							},
+							have_products {
+								name
+								price
+							},
 						}
 					}
 				}`
