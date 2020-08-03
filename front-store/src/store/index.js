@@ -10,7 +10,23 @@ export default new Vuex.Store({
     syncRoute: "sync",
     allBuyers: [],
     syncResponse : {},
-    currentProfile: {},
+    currentProfile: undefined,
+  },
+  getters: {
+    getIpsByCurrent: (state) => {
+      if(state.currentProfile){
+        let listOthers = state.currentProfile['~by_buyer'].map(transaction => {
+          return {
+            address: transaction.since_ip.address,
+            buyers: transaction.since_ip['~since_ip'].map(postTransaction => {
+              return postTransaction.by_buyer;
+            })
+        }
+        });
+
+        return listOthers;
+      }
+    },
   },
   mutations: {
     fillBuyers(state, value) {
