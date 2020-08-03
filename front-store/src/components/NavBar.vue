@@ -9,6 +9,9 @@
       <b-navbar-nav>
         <b-nav-item :to="{name: 'Sync'}">Sync</b-nav-item>
       </b-navbar-nav>
+      <b-navbar-nav>
+        <b-nav-item :to="{name: 'Buyers'}">Buyers</b-nav-item>
+      </b-navbar-nav>
     </b-collapse>
   </b-navbar>
 </div>

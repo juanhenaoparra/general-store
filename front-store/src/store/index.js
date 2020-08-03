@@ -5,24 +5,58 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    mainRoute: "http://localhost:3333",
+    mainRoute: `http://${location.hostname}:3333`,
     buyerRoute: "buyer",
+    syncRoute: "sync",
+    allBuyers: [],
+    syncResponse : {},
+    currentProfile: {},
   },
   mutations: {
+    fillBuyers(state, value) {
+      state.allBuyers.push(...value);
+    },
+    fillSync(state, value) {
+      state.syncResponse = value;
+    },
+    fillCurrentProfile(state, value) {
+      state.currentProfile = value;
+    },
   },
   actions: {
-    getAllBuyers: function({state}, [first, page]) {
+    getAllBuyers: function({state, commit}, [first, page]) {
       let uri = `${state.mainRoute}/${state.buyerRoute}?first=${first}&offset=${page}`
 
       Vue.axios.get(uri).then(res => {
-        console.log(res.data);
+        let data = res.data.buyers;
+        commit('fillBuyers', data)
       })
     },
-    getBuyerProfile: function ({state}, [id, first, offset]) {
+    seeMyProfile: function ({state, commit}, [id, first, offset]) {
       let uri = `${state.mainRoute}/${state.buyerRoute}/${id}?first=${first}&offset=${offset}`
 
       Vue.axios.get(uri).then(res => {
-        console.log(JSON.parse(res.data).buyers[0]);
+        let parsedProfile = JSON.parse(res.data).buyers[0];
+        commit('fillCurrentProfile', parsedProfile);
+      })
+    },
+    syncData: function ({ state, commit }, date) {
+      let dateNow = "";
+
+      if (date){
+        dateNow = date;
+      }else{
+        dateNow = new Date();
+      }
+
+      let withoutHours = new Date(dateNow.getFullYear(), dateNow.getMonth(),dateNow.getDate());
+      let dateParsed = parseInt(Date.parse(withoutHours)/1000);
+
+
+      let uri = `${state.mainRoute}/${state.syncRoute}?date=${dateParsed}`
+
+      Vue.axios.get(uri).then(res => {
+        commit('fillSync', res.data)
       })
     }
   },
