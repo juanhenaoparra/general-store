@@ -14,11 +14,11 @@ type Adder interface {
 type Transaction struct {
 	UID      string   `json:"uid,omitempty"`
 	ID       string   `json:"id,omitempty"`
-	BuyerID  string   `json:"buyer_id,omitempty"`
-	IP       string   `json:"ip,omitempty"`
-	Device   string   `json:"device,omitempty"`
-	Products []string `json:"product_ids"`
 	Date     *int     `json:"date,omitempty"`
+	BuyerID  string   `json:"by_buyer,omitempty"`
+	IP       string   `json:"since_ip,omitempty"`
+	Device   string   `json:"since_device,omitempty"`
+	Products []string `json:"have_products"`
 	DType    []string `json:"dgraph.type,omitempty"`
 }
 

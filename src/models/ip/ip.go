@@ -10,6 +10,11 @@ type Adder interface {
 	Add(ip IP)
 }
 
+// SearcherIP interface
+type SearcherIP interface {
+	SearchIP(ip IP)
+}
+
 // IP Type
 type IP struct {
 	UID     string   `json:"uid,omitempty"`
@@ -38,3 +43,23 @@ func (r *Repo) Add(ip IP) {
 func (r *Repo) GetAll() []IP {
 	return r.IPS
 }
+
+// SearchIP return boolean if an ip is in repo
+// func (r *Repo) SearchIP(address string) int {
+// 	for i, ip := range r.IPS {
+// 		if *ip.Address == address {
+// 			return i
+// 		}
+// 	}
+
+// 	Dtype := []string{"Ip"}
+
+// 	newIP := IP{
+// 		Address: &address,
+// 		DType:   Dtype,
+// 	}
+
+// 	r.Add(newIP)
+
+// 	return len(r.GetAll()) - 1
+// }
