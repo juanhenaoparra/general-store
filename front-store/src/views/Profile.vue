@@ -10,6 +10,15 @@
 
   </b-jumbotron>
 
+  <div class="row text-center">
+    <div class="col-md-10 mx-auto">
+      <h3>We highly recommend based in your transactions history this products</h3>
+      <p class="recommends p-3" v-if="currentProfile.recommends.length > 0">
+        {{joinTextProducts(currentProfile.recommends)}}
+      </p>
+    </div>
+  </div>
+
   <div class="row">
     <div class="col-md-6 text-center">
       <h3>Transactions</h3>
@@ -60,7 +69,7 @@ export default {
     ...mapGetters(['getIpsByCurrent']),
   },
   methods: {
-    ...mapActions(['seeMyProfile']),
+    ...mapActions(['seeMyProfile', 'getRecommendedProducts']),
     timeToHuman: function(unix_timestamp) {
       return new Date(unix_timestamp * 1000).toLocaleString();
     },
@@ -76,13 +85,25 @@ export default {
         return `Name: ${b.name} ID: ${b.id}`;
       }).join(', ');
     },
+    joinTextProducts(recommends) {
+      return recommends.map(r => {
+        return r.name;
+      }).join(', ');
+    },
   },
   created(){
-    this.seeMyProfile([this.$route.params.id, 30, 0]);
+    this.seeMyProfile([this.$route.params.id, 30, 0]).then(() => {
+      this.getRecommendedProducts();
+    });
+  },
+  destroyed() {
+    this.deleteCurrentProfile();
   }
 }
 </script>
 
-<style>
-
+<style scoped>
+  .recommends {
+    color: gray;
+  }
 </style>

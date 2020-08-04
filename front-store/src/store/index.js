@@ -8,6 +8,7 @@ export default new Vuex.Store({
     mainRoute: `http://${location.hostname}:3333`,
     buyerRoute: "buyer",
     syncRoute: "sync",
+    productRoute: "product",
     allBuyers: [],
     syncResponse : undefined,
     currentProfile: undefined,
@@ -27,6 +28,18 @@ export default new Vuex.Store({
         return listOthers;
       }
     },
+    getPricesByCurrent: (state) => {
+        let pricesFlatten = [].concat.apply([], state.currentProfile['~by_buyer'].map(transaction => {
+          return transaction.have_products.map(product => {
+              return product.price;
+            })
+        }));
+
+        let sum = pricesFlatten.reduce((sum, val) => (sum += val));
+        let avg = sum / pricesFlatten.length;
+
+        return parseInt(avg);
+    }
   },
   mutations: {
     fillBuyers(state, value) {
@@ -36,8 +49,14 @@ export default new Vuex.Store({
       state.syncResponse = value;
     },
     fillCurrentProfile(state, value) {
-      state.currentProfile = value;
+      state.currentProfile = {
+        ...value,
+        recommends: []
+      };
     },
+    fillSimilarProducts(state, value) {
+      state.currentProfile.recommends = value;
+    }
   },
   actions: {
     getAllBuyers: function({state, commit}, [first, page]) {
@@ -51,7 +70,7 @@ export default new Vuex.Store({
     seeMyProfile: function ({state, commit}, [id, first, offset]) {
       let uri = `${state.mainRoute}/${state.buyerRoute}/${id}?first=${first}&offset=${offset}`
 
-      Vue.axios.get(uri).then(res => {
+      return Vue.axios.get(uri).then(res => {
         let parsedProfile = JSON.parse(res.data).buyers[0];
         commit('fillCurrentProfile', parsedProfile);
       })
@@ -75,7 +94,19 @@ export default new Vuex.Store({
         commit('fillSync', res.data)
         return res.data;
       })
-    }
+    },
+    getRecommendedProducts: function ({state, getters, commit}) {
+      let avgPrices = getters.getPricesByCurrent;
+      let uriToGetMyProds = `${state.mainRoute}/${state.productRoute}/similar?avg=${avgPrices}`
+
+      Vue.axios.get(uriToGetMyProds).then(res => {
+        let similarProducts = JSON.parse(res.data).products.slice(0, 10);
+        commit('fillSimilarProducts', similarProducts);
+      })
+    },
+    deleteCurrentProfile: function({ commit }) {
+      commit('deleteCurrent', undefined);
+    },
   },
   modules: {
   }
