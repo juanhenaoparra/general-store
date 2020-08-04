@@ -19,19 +19,26 @@
           </div>
         </div>
 
-        <b-button size="lg" variant="success" @click="syncData2()">Sync!</b-button>
+        <b-button size="lg" variant="success" @click="handleSyncButton()" :disabled="charging">Sync!</b-button>
       </div>
     </div>
     <div class="row">
       <div v-if="syncResponse">
-        Synchronized Data: <br>
-        <ul class="text-left">
-          <li>Date: {{timeToHuman(syncResponse.date)}}</li>
-          <li>Buyers: {{syncResponse.buyers}}</li>
-          <li>Products: {{syncResponse.products}}</li>
-          <li>Ips: {{syncResponse.ips}}</li>
-          <li>Devices: {{syncResponse.devices}}</li>
-        </ul>
+        <div v-if="typeof syncResponse == 'string'">
+          <p class="error">
+            {{syncResponse}}
+          </p>
+        </div>
+        <div v-else>
+          Synchronized Data: <br>
+          <ul class="text-left">
+            <li>Date: {{timeToHuman(syncResponse.date)}}</li>
+            <li>Buyers: {{syncResponse.buyers}}</li>
+            <li>Products: {{syncResponse.products}}</li>
+            <li>Ips: {{syncResponse.ips}}</li>
+            <li>Devices: {{syncResponse.devices}}</li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
@@ -45,6 +52,7 @@ export default {
   data(){
     return {
       syncThisDate: undefined,
+      charging: undefined,
     }
   },
   computed: {
@@ -52,12 +60,17 @@ export default {
   },
   methods: {
     ...mapActions(['syncData']),
-    syncData2: function () {
+    handleSyncButton: function () {
+      this.charging = true;
       if(this.syncThisDate){
-        return this.syncData(new Date(this.syncThisDate));
+        return this.syncData(new Date(this.syncThisDate)).then(() => {
+          this.charging = undefined;
+        });
       }
 
-      this.syncData();
+      this.syncData().then(() => {
+        this.charging = undefined;
+      });
     },
     timeToHuman: function(unix_timestamp) {
       return new Date(unix_timestamp * 1000).toLocaleString();
@@ -65,3 +78,8 @@ export default {
   }
 }
 </script>
+<style scoped>
+  .error {
+    color: red;
+  }
+</style>

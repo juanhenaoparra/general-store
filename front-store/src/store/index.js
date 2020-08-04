@@ -71,8 +71,9 @@ export default new Vuex.Store({
 
       let uri = `${state.mainRoute}/${state.syncRoute}?date=${dateParsed}`
 
-      Vue.axios.get(uri).then(res => {
+      return Vue.axios.get(uri).then(res => {
         commit('fillSync', res.data)
+        return res.data;
       })
     }
   },
