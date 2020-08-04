@@ -6,6 +6,8 @@ Technologies:
 - Frontend Vue.js
 - Database: DGraph
 
+Here my [resume](./ResumeandDGraphResults.pdf)
+
 Getting Started
 
 1. Clone this repo
