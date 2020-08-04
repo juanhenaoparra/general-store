@@ -10,20 +10,20 @@ Getting Started
 
 1. Clone this repo
 2. Install DGraph
-  - Visit and [check][1] the steps of your os (This for linux):
-  - curl -sSf https://get.dgraph.io | bash
-  - /usr/local/bin/dgraph alpha --lru_mb 1024
-  - /usr/local/bin/dgraph zero
-  - go get github.com/dgraph-io/dgo
+    - Visit and [check][1] the steps of your os (This for linux):
+    - curl -sSf https://get.dgraph.io | bash
+    - /usr/local/bin/dgraph alpha --lru_mb 1024
+    - /usr/local/bin/dgraph zero
+    - go get github.com/dgraph-io/dgo
 3. In one terminal:
-  - cd front-store
-  - npm i
-  - npm run serve
+    - cd front-store
+    - npm i
+    - npm run serve
 4. In other terminal:
-  - go get -u github.com/go-chi/chi
-  - got get github.com/rs/cors
-  - cd src
-  - go run main.go
+    - go get -u github.com/go-chi/chi
+    - got get github.com/rs/cors
+    - cd src
+    - go run main.go
 5. Finish! Now test de development version
 
 
