@@ -2,6 +2,8 @@ package utils
 
 import (
 	"encoding/csv"
+	"fmt"
+	"strconv"
 	"strings"
 )
 
@@ -44,4 +46,22 @@ func CheckBack(stringSlice []string, searchItem string) bool {
 	}
 
 	return false
+}
+
+// GetTopAndLowStr given a media string return the top and low in string
+func GetTopAndLowStr(media string, variance int) (string, string) {
+	mediaInt, err := strconv.Atoi(media)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+	margin := (mediaInt * variance) / 100
+
+	topInt := mediaInt + margin
+	lowInt := mediaInt - margin
+
+	top := strconv.Itoa(topInt)
+	low := strconv.Itoa(lowInt)
+
+	return top, low
 }

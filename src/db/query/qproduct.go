@@ -2,38 +2,53 @@ package query
 
 import (
 	"context"
-	"encoding/json"
-	"fmt"
 	"log"
 
 	"../../db"
-	"../../models/product"
 )
 
-// SearchProductByID returns a Product Object given an id
-func SearchProductByID(ctx context.Context, id string) {
+// SearchProductPriceByBuyerID returns a product list given an buyer id
+func SearchProductPriceByBuyerID(ctx *context.Context, id string) string {
 	dg := db.NewClient()
 
 	variables := map[string]string{"$id": id}
 	q := `query Product($id: string) {
-					product (func: eq(id, $id)) {
-						uid
-						id
-						name
-						price
-					}
+					products (func: eq(id,"$id"), first: 1) 	{
+						uid,
+						id,
+						dgraph.type,
+						~by_buyer{
+							have_products {
+								{price}
+							}
+						}
+					},
 				}`
 
-	resp, err := dg.NewTxn().QueryWithVars(ctx, q, variables)
+	resp, err := dg.NewTxn().QueryWithVars(*ctx, q, variables)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	var p product.Product
-	err = json.Unmarshal(resp.Json, &p)
+	return string(resp.Json)
+}
+
+// SearchProductsByTopLow returns a product list given an top and low
+func SearchProductsByTopLow(ctx *context.Context, top string, low string) string {
+	dg := db.NewClient()
+
+	variables := map[string]string{"$top": top, "$low": low}
+	q := `query Product($top: int, $low: int) {
+					products (func: type("Product")) @filter(gt(price,$low) AND lt(price, $top)){
+						name,
+						price,
+					},
+				}`
+
+	resp, err := dg.NewTxn().QueryWithVars(*ctx, q, variables)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Println(p)
+	return string(resp.Json)
 }

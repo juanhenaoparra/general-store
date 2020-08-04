@@ -30,14 +30,14 @@ func main() {
 	db.Setup(dg)
 	// ---------- UNCOMMENT AND RUN THIS TO SETUP THE TYPES AND FIELDS ----------
 
-	// Routes
+	// ROUTES
+	// sync
 	r.Get("/sync", handler.SyncAll) // Route to get all repos
-
-	// r.Route("/buyer", func(r chi.Router) {
-	// 	r.Use(handler.BuyerCtx)
-	// })
-	r.Get("/buyer", handler.GetBuyersByPage)           // Receive params first & offset
-	r.Get("/buyer/{buyerId}", handler.GetBuyerProfile) // Receive id and params first & offset
+	// Buyer related
+	r.Get("/buyer", handler.GetBuyersByPage)                       // Receive params first & offset
+	r.Get("/buyer/{buyerId}", handler.GetBuyerProfile)             // Receive id and params first & offset
+	r.Get("/product/{buyerId}", handler.GetProductPricesByBuyerID) // Receive buyer id
+	r.Get("/product/similar", handler.GetSimilarPricesByTopLow)    // Receive params media and calculate similar products
 
 	corsHandler := cors.Default().Handler(r)
 	// Start the server
