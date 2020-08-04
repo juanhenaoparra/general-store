@@ -24,7 +24,14 @@
     </div>
     <div class="row">
       <div v-if="syncResponse">
-        <code>{{syncResponse}}</code>
+        Synchronized Data: <br>
+        <ul class="text-left">
+          <li>Date: {{timeToHuman(syncResponse.date)}}</li>
+          <li>Buyers: {{syncResponse.buyers}}</li>
+          <li>Products: {{syncResponse.products}}</li>
+          <li>Ips: {{syncResponse.ips}}</li>
+          <li>Devices: {{syncResponse.devices}}</li>
+        </ul>
       </div>
     </div>
   </div>
@@ -51,7 +58,10 @@ export default {
       }
 
       this.syncData();
-    }
+    },
+    timeToHuman: function(unix_timestamp) {
+      return new Date(unix_timestamp * 1000).toLocaleString();
+    },
   }
 }
 </script>

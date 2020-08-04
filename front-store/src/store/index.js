@@ -9,7 +9,7 @@ export default new Vuex.Store({
     buyerRoute: "buyer",
     syncRoute: "sync",
     allBuyers: [],
-    syncResponse : {},
+    syncResponse : undefined,
     currentProfile: undefined,
   },
   getters: {

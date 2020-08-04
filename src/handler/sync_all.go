@@ -54,8 +54,8 @@ func SyncAll(w http.ResponseWriter, r *http.Request) {
 	} else {
 		fmt.Printf("Fecha a sincronizar: %v\n", nDate)
 
-		_, buyersAssignments := syncBuyers(nDate, dg)
-		_, productsAssignments := syncProducts(nDate, dg)
+		buyers, buyersAssignments := syncBuyers(nDate, dg)
+		products, productsAssignments := syncProducts(nDate, dg)
 
 		assignments.Date = dateAssignments
 		assignments.Buyers = buyersAssignments
@@ -64,7 +64,15 @@ func SyncAll(w http.ResponseWriter, r *http.Request) {
 		// Once everything are saved pass params and save in transactions
 		assignments.Transactions = syncTransactions(&nDate, &transactions, &ips, &devices, &assignments, dg)
 
+		response := make(map[string]int)
+
+		response["date"] = nDate
+		response["buyers"] = len(buyers.Buyers)
+		response["products"] = len(products.Products)
+		response["ips"] = len(ips.IPS)
+		response["devices"] = len(devices.Devices)
+
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(transactions.Transactions[:100])
+		json.NewEncoder(w).Encode(response)
 	}
 }
