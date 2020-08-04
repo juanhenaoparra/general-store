@@ -6,7 +6,7 @@
     </p>
     <h3>About</h3>
     <p>
-      Hi! My name is <a href="http://github.com/juanhenaoparra">Juan Sebastian Henao</a>, I'm come from 2000's and I'm from Manizales.
+      Hi! My name is <a href="http://github.com/juanhenaoparra">Juan Sebastian Henao</a>, I come from 2000's and I'm from Manizales.
     </p>
     <p>The infrastructure used here: </p>
     <ul>
